@@ -9,12 +9,12 @@ public class NewBehaviourScript : MonoBehaviour
     private float verticalInput, horizontalInput;
     public float jumpForce;//定义一个跳跃的力
     public float zlbs;//定义重力倍数
-    Rigidbody rb;
+    Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
         Physics.gravity *= zlbs;
-        rb = GetComponent<Rigidbody>();//获取挂载在玩家身上的刚体组件
+        rb = GetComponent<Rigidbody2D>();//获取挂载在玩家身上的刚体组件
     }
 
     // Update is called once per frame
@@ -33,7 +33,7 @@ public class NewBehaviourScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //rb.AddForce(0, jumpForce, 0,ForceMode.Impulse); 效果同下行
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
         }
     }
 }

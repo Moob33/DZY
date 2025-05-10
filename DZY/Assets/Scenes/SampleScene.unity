@@ -414,8 +414,8 @@ MonoBehaviour:
   qhsudu: 10
   zysudu: 10
   bullet: {fileID: 2112909485233479717, guid: 7125056a57a4dae45a69139ac160865b, type: 3}
-  jumpForce: 0
-  zlbs: 0
+  jumpForce: 10
+  zlbs: 1
 --- !u!50 &586505149
 Rigidbody2D:
   serializedVersion: 4
