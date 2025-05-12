@@ -1148,7 +1148,7 @@ Transform:
   m_GameObject: {fileID: 1536461871}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.19, y: -2.28, z: 0.045}
+  m_LocalPosition: {x: -4.19, y: 0.19, z: 0.045}
   m_LocalScale: {x: 2.2038, y: 2.2038, z: 2.2038}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1246,8 +1246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9d47a33066bc84f93b9540b157fc9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
-  jumpForce: 0
+  moveSpeed: 10
+  jumpForce: 10
   projectilePrefab: {fileID: 3862285574449138659, guid: 4d885fc5509394f4b9167b80cddd6563, type: 3}
   projectileDamage: 15
   projectileDamageType: 0
@@ -1398,7 +1398,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1536469890
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1623,8 +1623,8 @@ Transform:
   m_GameObject: {fileID: 1850265130}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.016, y: -0.034, z: -0.020434324}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.006, y: -0.054, z: -0.0204}
+  m_LocalScale: {x: 0.9662354, y: 0.9662354, z: 0.9662354}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1536461872}
@@ -1693,7 +1693,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -1120902167, guid: d233d70bfa6e6fb4f9c63ef475b6b198, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.5, y: 1.5}
