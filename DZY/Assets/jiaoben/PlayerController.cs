@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Health health;
     private float lastAttackTime = 0f;
+    private int mianxiang = 1;//定义角色面向方向，通过数值实现枚举
+    private bool mianxiangYou = true;//默认面向右边
 
     private void Awake()
     {
@@ -40,16 +43,15 @@ public class PlayerController : MonoBehaviour
         // 动态更新FirePoint位置和朝向
         if (firePoint != null)
         {
-            // 保持与玩家中心点的相对位置
+            //重置开火点的中心到玩家角色中心
             firePoint.position = transform.position;
 
-            // 根据玩家朝向翻转FirePoint
-            float localX = Mathf.Sign(transform.localScale.x); // 获取玩家当前朝向（左:-1, 右:1）
-            firePoint.localPosition = new Vector3(
-                Mathf.Abs(firePoint.localPosition.x) * localX,
-                firePoint.localPosition.y,
-                firePoint.localPosition.z
-            );
+            //获取旋转轴上y的数据来判断朝向
+            float direction = Mathf.Sign(transform.localScale.x); // 获取朝向（左:-1, 右:1）
+            firePoint.localRotation = Quaternion.Euler(0f,direction > 0 ? 0f : 180f,0f);
+
+            //更新开火点的位置
+            firePoint.localPosition = new Vector3(Mathf.Abs(firePoint.localPosition.x), firePoint.localPosition.y,firePoint.localPosition.z);
         }
     }
 
@@ -57,21 +59,6 @@ public class PlayerController : MonoBehaviour
     {
         float moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        // 翻转角色朝向
-        if (moveInput > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (moveInput < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-
-        if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.001f)
-        {
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-        }
     }
 
     private void HandleAttack()
@@ -91,16 +78,23 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Debug.Log("Attempting to shoot projectile"); // 添加调试日志
+        Debug.Log("Attempting to shoot projectile");
 
+        // 使用firePoint的位置和旋转实例化子弹
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
         Projectile projectileScript = projectile.GetComponent<Projectile>();
 
         if (projectileScript != null)
         {
-            Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+            //使用transform.right获取朝向（适用于3D和2D）
+            Vector2 direction = transform.right;
+
+            //根据旋转角度判断（适用于2D）
+            // float angle = transform.eulerAngles.y;
+            // Vector2 direction = angle == 0 ? Vector2.right : Vector2.left;
+
             projectileScript.Initialize(direction, projectileSpeed, projectileDamage, projectileDamageType, gameObject);
-            Debug.Log("Projectile fired successfully"); // 添加成功发射日志
+            Debug.Log("Projectile fired successfully in direction: " + direction);
         }
         else
         {
@@ -122,6 +116,24 @@ public class PlayerController : MonoBehaviour
                 );
                 health.TakeDamage(damageData);
             }
+        }
+    }
+    private void Filp()
+    {
+        mianxiang = mianxiang * -1;
+        mianxiangYou = !mianxiangYou;
+        transform.Rotate(0, 180, 0);
+    }
+
+    private void FilpControllor()
+    {
+        if (rb.velocity.x > 0 && !mianxiangYou)
+        {
+            Filp();
+        }
+        else if (rb.velocity.x < 0 && mianxiangYou)
+        {
+            Filp();
         }
     }
 }
