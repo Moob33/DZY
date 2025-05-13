@@ -6,6 +6,10 @@ using TMPro;
 
 public class HealthUI : MonoBehaviour
 {
+    [Header("Player Reference")]
+    [Tooltip("拖拽Player对象到这里")]
+    [SerializeField] private Health playerHealth;  // 编辑器拖拽赋予对象
+
     [Header("UI References")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TextMeshProUGUI healthText;
@@ -17,8 +21,6 @@ public class HealthUI : MonoBehaviour
     [SerializeField] private float cautionThreshold = 0.6f; // 60%血量以下变黄
     [SerializeField] private float dangerThreshold = 0.3f;  // 30%血量以下变红
 
-    private Health playerHealth;
-
     private void Start()
     {
         InitializeUI();
@@ -26,10 +28,10 @@ public class HealthUI : MonoBehaviour
 
     private void InitializeUI()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null || !player.TryGetComponent(out playerHealth))
+        // 直接使用已赋值的playerHealth
+        if (playerHealth == null)
         {
-            Debug.LogError("Player or Health component not found!");
+            Debug.LogError("Player Health reference not assigned in inspector!");
             enabled = false; // 禁用脚本
             return;
         }
@@ -88,4 +90,5 @@ public class HealthUI : MonoBehaviour
             playerHealth.OnHealthChanged -= UpdateHealthDisplay;
         }
     }
+
 }
