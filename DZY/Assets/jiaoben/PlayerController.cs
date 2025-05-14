@@ -37,21 +37,27 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
+        //HandleMovement();
         HandleAttack();
 
         // 动态更新FirePoint位置和朝向
         if (firePoint != null)
         {
-            //重置开火点的中心到玩家角色中心
-            firePoint.position = transform.position;
+            // 保留旋转逻辑（方法四的核心修改是位置处理）
+            float direction = Mathf.Sign(transform.localScale.x);
+            firePoint.localRotation = Quaternion.Euler(0f, direction > 0 ? 0f : 180f, 0f);
 
-            //获取旋转轴上y的数据来判断朝向
-            float direction = Mathf.Sign(transform.localScale.x); // 获取朝向（左:-1, 右:1）
-            firePoint.localRotation = Quaternion.Euler(0f,direction > 0 ? 0f : 180f,0f);
+            // === 方法四新增/修改的部分开始 ===
+            // 获取当前本地位置（已在编辑器中设置好）
+            Vector3 pos = firePoint.localPosition;
 
-            //更新开火点的位置
-            firePoint.localPosition = new Vector3(Mathf.Abs(firePoint.localPosition.x), firePoint.localPosition.y,firePoint.localPosition.z);
+            // 保持X轴绝对值并应用朝向
+            firePoint.localPosition = new Vector3(
+                Mathf.Abs(pos.x) * direction, // X轴：绝对值*方向
+                pos.y,                        // Y轴：保持编辑器设置的值
+                pos.z                         // Z轴：保持不变
+            );
+            // === 方法四新增/修改的部分结束 ===
         }
     }
 
@@ -63,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (Input.GetKeyDown(KeyCode.G) && Time.time >= lastAttackTime + attackCooldown)
+        if (Input.GetKeyDown(KeyCode.K) && Time.time >= lastAttackTime + attackCooldown)
         {
             ShootProjectile();
             lastAttackTime = Time.time;
@@ -86,12 +92,8 @@ public class PlayerController : MonoBehaviour
 
         if (projectileScript != null)
         {
-            //使用transform.right获取朝向（适用于3D和2D）
             Vector2 direction = transform.right;
 
-            //根据旋转角度判断（适用于2D）
-            // float angle = transform.eulerAngles.y;
-            // Vector2 direction = angle == 0 ? Vector2.right : Vector2.left;
 
             projectileScript.Initialize(direction, projectileSpeed, projectileDamage, projectileDamageType, gameObject);
             Debug.Log("Projectile fired successfully in direction: " + direction);
