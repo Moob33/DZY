@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<Health>();
-
         // 如果未指定firePoint，自动创建一个
         if (firePoint == null)
         {
@@ -37,27 +36,29 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //HandleMovement();
         HandleAttack();
+        Player player = GetComponent<Player>();
+        bool isGround = player.isGround; // 从player脚本获得部分参数
 
-        // 动态更新FirePoint位置和朝向
+        // 动态更新 FirePoint 的位置和朝向
         if (firePoint != null)
         {
-            // 保留旋转逻辑（方法四的核心修改是位置处理）
+            // 1. 获取角色的当前朝向（左/右）
             float direction = Mathf.Sign(transform.localScale.x);
+
+            // 2. 设置 FirePoint 的旋转（保持原逻辑）
             firePoint.localRotation = Quaternion.Euler(0f, direction > 0 ? 0f : 180f, 0f);
 
-            // === 方法四新增/修改的部分开始 ===
-            // 获取当前本地位置（已在编辑器中设置好）
-            Vector3 pos = firePoint.localPosition;
+            // 3. 定义 FirePoint 的本地相对偏移量（可配置的 X 和 Y 偏移）
+            Vector2 localOffset = new Vector2(0.5f, 0.2f); // 示例值
 
-            // 保持X轴绝对值并应用朝向
-            firePoint.localPosition = new Vector3(
-                Mathf.Abs(pos.x) * direction, // X轴：绝对值*方向
-                pos.y,                        // Y轴：保持编辑器设置的值
-                pos.z                         // Z轴：保持不变
-            );
-            // === 方法四新增/修改的部分结束 ===
+            // 4. 动态计算世界坐标位置
+            firePoint.position = transform.position +
+                                new Vector3(
+                                    localOffset.x * direction, // X 轴：方向敏感
+                                    localOffset.y,            // Y 轴：固定偏移
+                                    0f
+                                );
         }
     }
 
@@ -69,7 +70,13 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (Input.GetKeyDown(KeyCode.K) && Time.time >= lastAttackTime + attackCooldown)
+        Player player = GetComponent<Player>();
+        if (player != null)
+        {
+            bool isGround = player.isGround;
+            Debug.Log("变量c的值: " + isGround);
+        }
+        if (Input.GetKeyDown(KeyCode.K) && Time.time >= lastAttackTime + attackCooldown &&player!=null&&player.isGround)
         {
             ShootProjectile();
             lastAttackTime = Time.time;

@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
         // 碰到墙壁等障碍物也销毁
-        else if (other.CompareTag("Obstacle"))
+        else if (other.CompareTag("db"))
         {
             Destroy(gameObject);
         }

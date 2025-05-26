@@ -12,8 +12,14 @@ public class Health : MonoBehaviour
     [SerializeField] private float physicalDefense = 0f;
     [SerializeField] private float energyDefense = 0f;
 
+    [Header("受击效果")]
+    [SerializeField] private float hitEffectDuration = 0.3f;
+    private Coroutine hitCoroutine;
+
     private float currentHealth;
     private bool isInvulnerable = false;
+    public bool over,isHit;
+    private Animator anim1;
 
     // 事件，用于通知其他组件血量变化
     public delegate void HealthChanged(float current, float max);
@@ -25,6 +31,7 @@ public class Health : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+        anim1 = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(DamageData damageData)
@@ -48,12 +55,15 @@ public class Health : MonoBehaviour
 
         // 触发血量变化事件
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        hitCoroutine = StartCoroutine(TriggerHitEffect());
 
         // 调试日志
         Debug.Log($"{gameObject.name} took {finalDamage} {damageData.damageType} damage (Multiplier: {damageMultiplier})");
 
         if (currentHealth <= 0)
         {
+           // over = true;
+            //anim1.SetBool("over", over);
             Die();
         }
         Debug.Log($"即将触发血量更新事件，当前血量：{currentHealth}");
@@ -77,8 +87,31 @@ public class Health : MonoBehaviour
         else
         {
             // 玩家死亡逻辑，比如游戏结束
+            over = true;
+            anim1.SetBool("over", over );
             Debug.Log("Game Over!");
         }
+    }
+    private IEnumerator TriggerHitEffect()
+    {
+        // 取消正在进行的受击效果
+        if (hitCoroutine != null)
+        {
+            StopCoroutine(hitCoroutine);
+        }
+
+        // 设置受击状态
+        isHit = true;
+        anim1.SetBool("isHit", isHit);
+
+        // 等待受击持续时间
+        yield return new WaitForSeconds(hitEffectDuration);
+
+        // 重置受击状态
+        isHit = false;
+        anim1.SetBool("isHit", isHit);
+
+        hitCoroutine = null;
     }
 
     public void SetInvulnerable(bool invulnerable)

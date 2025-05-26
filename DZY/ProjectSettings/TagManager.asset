@@ -7,6 +7,8 @@ TagManager:
   - EnemyAttack
   - Enemy
   - db
+  - 'nao dai '
+  - noh
   layers:
   - Default
   - TransparentFX
@@ -41,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: "\u80CC\u666F"
+    uniqueID: 3246209481
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

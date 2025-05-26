@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class Player : MonoBehaviour
 {
     //≥Â¥Ãœ‡πÿ…Ë÷√
     [Header("dash")]
@@ -89,7 +89,7 @@ public class NewBehaviourScript : MonoBehaviour
             Attack();
         }
 
-        if (UnityEngine.Input.GetKeyDown(KeyCode.K))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.K) && isGround == true)
         {
             Attack2();
         }
@@ -183,4 +183,4 @@ public class NewBehaviourScript : MonoBehaviour
             isGround = true;
         }
     }
-    }
+}

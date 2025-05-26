@@ -78,7 +78,7 @@ public class HealthUI : MonoBehaviour
             // 可选：添加动画效果（如血量低时闪烁）
             if (healthPercent < dangerThreshold)
             {
-                healthText.GetComponent<Animator>()?.SetTrigger("Danger");
+               // healthText.GetComponent<Animator>()?.SetTrigger("Danger");
             }
         }
     }
