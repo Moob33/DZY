@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class Health : MonoBehaviour
     private bool isInvulnerable = false;
     public bool over,isHit;
     private Animator anim1;
-
+    private AudioSource hit;
     // 事件，用于通知其他组件血量变化
     public delegate void HealthChanged(float current, float max);
     public event HealthChanged OnHealthChanged;
@@ -32,6 +33,7 @@ public class Health : MonoBehaviour
     {
         currentHealth = maxHealth;
         anim1 = GetComponentInChildren<Animator>();
+        hit = GetComponent<AudioSource>();
     }
 
     public void TakeDamage(DamageData damageData)
@@ -82,14 +84,31 @@ public class Health : MonoBehaviour
 
         if (!isPlayer)
         {
+            GetComponent<boom>().boom1();
             Destroy(gameObject);
+
         }
         else
         {
             // 玩家死亡逻辑，比如游戏结束
             over = true;
             anim1.SetBool("over", over );
+            StartCoroutine(LoadNextSceneAfterDelay(2f));
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             Debug.Log("Game Over!");
+        }
+    }
+    private IEnumerator LoadNextSceneAfterDelay(float delaySeconds)
+    {
+        Debug.Log($"等待 {delaySeconds} 秒后跳转场景...");
+        yield return new WaitForSeconds(delaySeconds);
+
+        // 场景跳转逻辑
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+            Debug.Log("已跳转到下一场景");
         }
     }
     private IEnumerator TriggerHitEffect()
